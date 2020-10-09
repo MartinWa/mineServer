@@ -3,7 +3,7 @@ open Farmer.Builders
 open Farmer.ContainerGroup
 
 let adminMinecraftAccount = ""
-let publicDnsName = "mineserver12345"
+let publicDnsName = "mineserver12345" // Will be mineserver12345.westeurope.azurecontainer.io
 let storageAccountName = "minecraftstorage12345"
 let fileShareName = "minecraft-share"
 let volumeName = "minecraft-storage"
@@ -26,6 +26,7 @@ let mineServerContainer =
         env_vars [
             env_var "EULA" "TRUE"
             env_var "OPS" adminMinecraftAccount
+            env_var "TZ" "Europe/Stockholm"
         ]
         add_volume_mount volumeName "/data"
 
