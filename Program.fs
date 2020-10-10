@@ -1,13 +1,11 @@
 ﻿open Farmer
 open Farmer.Builders
 open Farmer.ContainerGroup
+open Settings
 
-let adminMinecraftAccount = ""
-let publicDnsName = "mineserver12345" // Will be mineserver12345.westeurope.azurecontainer.io
-let storageAccountName = "minecraftstorage12345"
-let fileShareName = "minecraft-share"
-let volumeName = "minecraft-storage"
-let minecraftPort = 25565us
+
+let fileShareName = "zzz"
+let volumeName = "ttt"
 
 let storage = storageAccount {
     name storageAccountName
