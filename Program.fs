@@ -4,8 +4,14 @@ open Farmer.ContainerGroup
 open Settings
 
 
-let fileShareName = "zzz"
-let volumeName = "ttt"
+let fileShareName = "minecraft-share"
+let volumeName = "minecraft-storage"
+let containerName = "minecraft-container"
+let dockerImage = "itzg/minecraft-server"
+let containerMemory = 4.0<Gb>
+let containerCpuCount = 2
+let containerGroupName = "minecraft-container-group"
+let resourceGroupName = "minecraft"
 
 let storage = storageAccount {
     name storageAccountName
@@ -15,25 +21,24 @@ let storage = storageAccount {
 
 let mineServerContainer = 
     containerInstance {
-        name "minecraft-container"
-        image "itzg/minecraft-server"
-        add_public_ports [ minecraftPort ]
+        name containerName
+        image dockerImage
+        add_public_ports [ Settings.minecraftPort ]
         
-        memory 4.0<Gb>
-        cpu_cores 2
+        memory containerMemory
+        cpu_cores containerCpuCount
         env_vars [
             env_var "EULA" "TRUE"
-            env_var "OPS" adminMinecraftAccount
-            env_var "TZ" "Europe/Stockholm"
+            env_var "OPS" Settings.adminMinecraftAccount
+            env_var "TZ" Settings.timeZone
         ]
         add_volume_mount volumeName "/data"
-
     }
 
 let mineServer = containerGroup {
-    name "minecraft-container-group"
+    name containerGroupName
     operating_system Linux
-    public_dns publicDnsName [ TCP, minecraftPort ]
+    public_dns Settings.publicDnsName [ TCP, Settings.minecraftPort ]
     restart_policy AlwaysRestart
     add_instances [ mineServerContainer ]
     add_volumes [
@@ -42,7 +47,7 @@ let mineServer = containerGroup {
 }
 
 let deployment = arm {
-    location Location.WestEurope
+    location Settings.location
     add_resources [ storage; mineServer ]
 }
 
@@ -52,5 +57,5 @@ let deployment = arm {
 
 // Alternatively, deploy your resource group directly to Azure here.
 deployment
-|> Deploy.execute "minecraft" Deploy.NoParameters
+|> Deploy.execute resourceGroupName Deploy.NoParameters
 |> printfn "%A"
