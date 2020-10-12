@@ -3,8 +3,8 @@ open Farmer.Builders
 open Farmer.ContainerGroup
 open Settings
 
-
 let fileShareName = "minecraft-share"
+let fileShareSize = 10<Gb>
 let volumeName = "minecraft-storage"
 let containerName = "minecraft-container"
 let dockerImage = "itzg/minecraft-server"
@@ -16,7 +16,7 @@ let resourceGroupName = "minecraft"
 let storage = storageAccount {
     name storageAccountName
     sku Storage.Standard_LRS
-    add_file_share_with_quota fileShareName 10<Gb>
+    add_file_share_with_quota fileShareName fileShareSize
     }
 
 let mineServerContainer = 
@@ -31,6 +31,9 @@ let mineServerContainer =
             env_var "EULA" "TRUE"
             env_var "OPS" Settings.adminMinecraftAccount
             env_var "TZ" Settings.timeZone
+            env_var "ENABLE_RCON" "false"
+            env_var "TYPE" "BUKKIT"
+            env_var "MEMORY" (sprintf "%fG" (containerMemory/1.0<Gb>))
         ]
         add_volume_mount volumeName "/data"
     }
