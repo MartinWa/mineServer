@@ -31,9 +31,8 @@ let mineServerContainer =
             env_var "EULA" "TRUE"
             env_var "OPS" Settings.adminMinecraftAccount
             env_var "TZ" Settings.timeZone
-            env_var "ENABLE_RCON" "false"
-            env_var "TYPE" "BUKKIT"
-            env_var "MEMORY" (sprintf "%fG" (containerMemory/1.0<Gb>))
+            env_var "ENABLE_RCON" "FALSE"
+            env_var "MEMORY" (sprintf "%.0fG" (containerMemory/1.0<Gb>))
         ]
         add_volume_mount volumeName "/data"
     }
